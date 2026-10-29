@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Приложение Фаза</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Раскладка: слева телефон 390 px с приложением, справа панель «Что где». На узком экране панель уходит под телефон.
+   Палитра из цветов кабеля: изоляция синяя, жила медная, заземление зелёное. */
+:root{--bg:#EEF1F4;--surf:#FFFFFF;--surf2:#F4F6F8;--ink:#111A24;--mute:#5B6877;--line:#DCE2E8;--cu:#B35A1B;--cuink:#FFFFFF;--cusoft:#F8E8DA;--blue:#2A5BD0;--bluesoft:#E3EBFB;--ok:#3F8A2B;--oksoft:#E2F0DC;--busy:#8A94A0;--map:#E4EAEE;--street:#FFFFFF;--water:#BDD5E9;--park:#CDE2C2;--shadow:rgba(17,26,36,.16);--font:'Onest',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1117;--surf:#141D27;--surf2:#1A2530;--ink:#E8EDF2;--mute:#93A1B0;--line:#263341;--cu:#EA9453;--cuink:#1A0F06;--cusoft:#3A2515;--blue:#86A7F4;--bluesoft:#1B2A4A;--ok:#7CC768;--oksoft:#1E3320;--busy:#6E7A87;--map:#18222C;--street:#222F3B;--water:#1F3A52;--park:#1E3524;--shadow:rgba(0,0,0,.5);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B1117;--surf:#141D27;--surf2:#1A2530;--ink:#E8EDF2;--mute:#93A1B0;--line:#263341;--cu:#EA9453;--cuink:#1A0F06;--cusoft:#3A2515;--blue:#86A7F4;--bluesoft:#1B2A4A;--ok:#7CC768;--oksoft:#1E3320;--busy:#6E7A87;--map:#18222C;--street:#222F3B;--water:#1F3A52;--park:#1E3524;--shadow:rgba(0,0,0,.5);color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.45;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:18px 40px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.top{max-width:1080px;margin:0 auto 22px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;position:relative}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;letter-spacing:-.01em;margin-right:auto}
+.brand svg{width:34px;height:34px}
+.brand small{font-weight:500;font-size:12px;color:var(--mute);background:var(--surf);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.seg{display:inline-flex;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:3px}
+.seg button{border:0;background:none;padding:7px 14px;border-radius:9px;font-weight:600;font-size:14px;color:var(--mute);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.ghost{border:1px solid var(--line);background:var(--surf);border-radius:12px;padding:9px 14px;font-weight:600;font-size:14px;white-space:nowrap}
+.ghost[aria-pressed="true"]{border-color:var(--cu);color:var(--cu)}
+.stage{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:40px;align-items:start}
+.phone{width:100%;max-width:410px;height:790px;margin-inline:auto;background:var(--surf);border:1px solid var(--line);border-radius:46px;box-shadow:0 0 0 9px var(--surf2),0 30px 60px -20px var(--shadow);display:flex;flex-direction:column;overflow:hidden;position:relative}
+.appbar{display:flex;align-items:center;gap:10px;padding:20px 20px 10px}
+.appbar b{font-size:20px;letter-spacing:-.01em}
+.appbar span{font-size:12.5px;color:var(--mute)}
+.appbar .who{margin-left:auto;width:34px;height:34px;border-radius:50%;background:var(--bluesoft);color:var(--blue);display:grid;place-items:center;font-weight:700;font-size:13px}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 16px 16px;position:relative;scrollbar-width:thin}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:var(--surf);padding:6px 6px 14px}
+.tabs button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:600;color:var(--mute);padding:6px 0;border-radius:12px;position:relative}
+.tabs button svg{width:23px;height:23px}
+.tabs button[aria-selected="true"]{color:var(--cu)}
+.chips{display:flex;gap:7px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none;position:relative}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--surf);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--mute);white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--cusoft);border-color:var(--cu);color:var(--cu)}
+.chiplabel{font-size:12px;color:var(--mute);margin:2px 0 4px;font-weight:600}
+.map{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);margin:4px 0 12px}
+.map svg{display:block;width:100%;height:auto}
+.map .note{position:absolute;left:8px;bottom:6px;font-size:10.5px;color:var(--mute);background:color-mix(in srgb,var(--surf) 80%,transparent);padding:1px 6px;border-radius:6px}
+.mpin{cursor:pointer}
+.mpin circle{stroke:var(--surf);stroke-width:2.5}
+.mpin text{font:700 9px var(--font);fill:#fff;text-anchor:middle;pointer-events:none}
+.list{display:flex;flex-direction:column;gap:9px;position:relative}
+.card{display:flex;gap:12px;align-items:center;padding:11px 12px;border:1px solid var(--line);border-radius:16px;background:var(--surf);text-align:left;width:100%}
+.card[aria-current="true"]{border-color:var(--cu);background:var(--cusoft)}
+.ava{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-weight:700;font-size:15px;color:#fff}
+.card .m{min-width:0;flex:1}
+.card b{display:block;font-size:15px}
+.card .sub,.card .rate{display:block}
+.card .sub{font-size:12.5px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st{flex:none;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px}
+.st.free{background:var(--oksoft);color:var(--ok)}
+.st.busy{background:var(--surf2);color:var(--mute)}
+.rate{font-size:12.5px;color:var(--mute)}
+h3{margin:14px 0 8px;font-size:16px;letter-spacing:-.005em}
+.search{display:flex;gap:8px;margin:2px 0 10px}
+.search input{flex:1;min-width:0;border:1px solid var(--line);background:var(--surf2);color:var(--ink);border-radius:14px;padding:11px 14px;font:inherit;font-size:14.5px}
+.btn{border:0;background:var(--cu);color:var(--cuink);border-radius:14px;padding:11px 16px;font-weight:700;font-size:14.5px}
+.btn.alt{background:var(--ink);color:var(--bg)}
+.btn.line{background:var(--surf);border:1px solid var(--line);color:var(--ink)}
+.ans{border:1px solid var(--line);border-radius:18px;padding:14px;background:var(--surf2);position:relative}
+.ans .q{font-weight:600;margin:0 0 8px}
+.ans p{margin:0 0 8px;font-size:14px}
+.refs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.ref{font-size:12px;font-weight:600;padding:4px 9px;border-radius:9px;background:var(--bluesoft);color:var(--blue)}
+.demo{font-size:11.5px;color:var(--mute);margin-top:8px}
+.doc{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.doc:last-child{border:0}
+.doc .ic{flex:none;width:40px;height:48px;border-radius:8px;background:var(--bluesoft);color:var(--blue);display:grid;place-items:center;font-weight:700;font-size:11px}
+.doc b{display:block;font-size:14.5px}
+.doc span{font-size:13px;color:var(--mute)}
+mark{background:var(--cusoft);color:var(--cu);border-radius:3px;padding:0 2px}
+.calc label{display:block;font-size:12.5px;font-weight:600;color:var(--mute);margin:10px 0 4px}
+.calc input,.calc select{width:100%;border:1px solid var(--line);background:var(--surf2);color:var(--ink);border-radius:12px;padding:10px 12px;font:inherit;font-family:var(--mono);font-size:15px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.res{margin-top:14px;border-radius:18px;padding:16px;background:var(--ink);color:var(--bg)}
+.res small{display:block;font-size:12.5px;opacity:.75}
+.res strong{font-family:var(--mono);font-size:34px;font-weight:600;letter-spacing:-.02em}
+.res em{font-style:normal;font-size:12.5px;opacity:.75;display:block;margin-top:4px}
+.chat{display:flex;flex-direction:column;height:100%;position:relative}
+.chat .head{display:flex;align-items:center;gap:10px;padding:2px 0 10px;border-bottom:1px solid var(--line)}
+.msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:12px 0}
+.msg{max-width:82%;padding:9px 13px;border-radius:16px;font-size:14px;background:var(--surf2)}
+.msg.me{align-self:flex-end;background:var(--cu);color:var(--cuink)}
+.msg time{display:block;font-size:10.5px;opacity:.6;margin-top:2px}
+.send{display:flex;gap:8px;padding-top:8px}
+.send input{flex:1;min-width:0;border:1px solid var(--line);background:var(--surf2);color:var(--ink);border-radius:14px;padding:11px 14px;font:inherit;font-size:14.5px}
+.sheet{position:absolute;inset:0;background:color-mix(in srgb,var(--ink) 40%,transparent);display:flex;align-items:flex-end;z-index:5}
+.sheet>div{background:var(--surf);width:100%;max-height:92%;overflow-y:auto;border-radius:26px 26px 0 0;padding:18px 18px 22px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 12px}
+.tile{aspect-ratio:1;border-radius:14px;display:flex;flex-direction:column;justify-content:flex-end;padding:8px;font-size:11.5px;font-weight:600;color:#fff;position:relative;overflow:hidden}
+.tile svg{position:absolute;right:6px;top:6px;width:30px;height:30px;opacity:.9}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.tag{font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--surf2);color:var(--mute)}
+textarea{width:100%;border:1px solid var(--line);background:var(--surf2);color:var(--ink);border-radius:14px;padding:11px 14px;font:inherit;font-size:14.5px;resize:vertical;min-height:84px}
+.toggle{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:1px solid var(--line);border-radius:16px;margin:6px 0}
+.sw{width:46px;height:28px;border-radius:999px;border:0;background:var(--busy);position:relative;padding:0}
+.sw::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s}
+.sw[aria-pressed="true"]{background:var(--ok)}
+.sw[aria-pressed="true"]::after{transform:translateX(18px)}
+input[type=range]{width:100%;accent-color:var(--cu)}
+.guide{position:sticky;top:16px;background:var(--surf);border:1px solid var(--line);border-radius:24px;padding:22px 22px 14px}
+.guide h2{margin:0 0 4px;font-size:20px;letter-spacing:-.01em}
+.guide p{margin:0 0 12px;color:var(--mute);font-size:14px}
+.guide ol{list-style:none;margin:0;padding:0}
+.guide li button{display:flex;gap:12px;width:100%;text-align:left;border:0;background:none;padding:10px 8px;border-radius:14px}
+.guide li button:hover{background:var(--surf2)}
+.guide li i{flex:none;width:24px;height:24px;border-radius:50%;background:var(--cu);color:var(--cuink);display:grid;place-items:center;font:700 12px var(--font);font-style:normal;margin-top:1px}
+.guide li b{display:block;font-size:14.5px}
+.guide li span{display:block;font-size:13px;color:var(--mute)}
+.guide .foot{border-top:1px solid var(--line);margin-top:8px;padding:12px 8px 6px;font-size:13px;color:var(--mute)}
+.pin{display:none;position:absolute;z-index:3;width:21px;height:21px;border-radius:50%;background:var(--cu);color:var(--cuink);font:700 11.5px var(--font);font-style:normal;place-items:center;box-shadow:0 0 0 3px var(--surf);pointer-events:none}
+body.hints .pin{display:grid}
+.tabs .pin{top:-1px;left:calc(50% + 4px)}
+@media (max-width:900px){.stage{grid-template-columns:minmax(0,1fr);gap:26px}.guide{position:static}}
+@media (max-width:480px){.phone{border-radius:30px;height:760px;box-shadow:0 0 0 5px var(--surf2)}.top{gap:10px}.seg button{padding:7px 11px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="brand">
+    <svg viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="10" fill="var(--ink)"/><path d="M10 21h5l2-8 3 12 2-6h3" fill="none" stroke="var(--cu)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span id="bn">Фаза</span> <small id="demotag">демо-данные</small>
+  </div>
+  <div class="acts" style="position:relative">
+    <i class="pin" data-n="1" style="left:-8px;top:-9px">1</i>
+    <div class="seg" role="group" aria-label="Роль"><button type="button" data-role="client" aria-pressed="true" id="rClient">Клиент</button><button type="button" data-role="pro" aria-pressed="false" id="rPro">Исполнитель</button></div>
+    <div class="seg" role="group" aria-label="Язык"><button type="button" data-lang="ru" aria-pressed="true">RU</button><button type="button" data-lang="es" aria-pressed="false">ES</button></div>
+    <button class="ghost" id="hintbtn" type="button" aria-pressed="true">Что где</button>
+  </div>
+</header>
+
+<main class="stage">
+  <section class="phone" aria-label="Приложение">
+    <div class="appbar"><b id="ab">Фаза</b><span id="city">Мадрид</span><div class="who" id="who">АП</div></div>
+    <div class="screen" id="screen"></div>
+    <nav class="tabs" id="tabs" role="tablist"></nav>
+  </section>
+  <aside class="guide" id="guide">
+    <h2 id="gt">Что где в демо</h2>
+    <p id="gp">Нажмите на пункт, и демо откроет этот экран.</p>
+    <ol id="gl"></ol>
+    <div class="foot" id="gf"></div>
+  </aside>
+</main>
+
+<script>
+(function(){
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s)};
+var T={
+ru:{demo:"демо-данные",city:"Мадрид",client:"Клиент",pro:"Исполнитель",hints:"Что где",
+ tabMap:"Карта",tabProfile:"Профиль",tabNorms:"Нормы",tabCalc:"Расчёт",tabChat:"Чат",
+ room:"Помещение",work:"Тип работ",all:"Все",
+ rooms:{flat:"Квартира",house:"Частный дом",block:"Многоэтажный дом",industrial:"Промышленное",factory:"Фабрика, завод"},
+ works:{small:"Мелкий ремонт",emergency:"Аварии",panel:"Переборка щита",full:"Электрика под ключ",solar:"Солнечные панели",ev:"Зарядки для авто"},
+ free:"Свободен",busy:"Занят",km:"км",rev:"отзывов",found:"Найдено специалистов",none:"Под такой фильтр специалистов нет. Сбросьте один из фильтров.",
+ schema:"Схема района, не реальная карта",write:"Написать",close:"Закрыть",area:"Территория работы",abilities:"О специалисте",myWorks:"Работы",
+ normsT:"Нормы и регламенты",askPh:"Спросите про нормы, например: щит в доме 300 м²",ask:"Спросить",
+ q:"Какие нормы нужны для установки электрощита в жилом доме 300 м²?",
+ a1:"Для жилого дома такого размера щит обычно делят на группы линий: освещение, розетки, кухня, отдельные мощные потребители. На каждую линию ставят защитный автомат, на розеточные группы добавляют устройство защитного отключения.",
+ a2:"Щит размещают в доступном месте внутри дома, линии и аппараты маркируют, а после монтажа проверяют изоляцию и заземление.",
+ refs:["REBT · ITC-BT-25, раздел о защите","REBT · ITC-BT-19, общие требования"],
+ demoNote:"Демо: тексты условные. В рабочей версии ответ строится по вашим документам, со ссылкой на раздел и страницу.",
+ docs:"Документы и статьи",docsSearch:"Поиск по тексту документов",docSnip:{rebt:"Регламент по низковольтным установкам: общие требования к монтажу, защите и проверке.",bt25:"Внутренние установки в жилье: группы линий, защита, расположение щита.",bt52:"Инфраструктура для зарядки электромобилей: линии, защита, схемы подключения.",art1:"Как выбрать электрика: что спросить до начала работ и какие документы попросить после."},
+ docTitle:{rebt:"REBT: регламент низкого напряжения",bt25:"ITC-BT-25: электрика в жилье",bt52:"ITC-BT-52: зарядка электромобилей",art1:"Статья: как выбрать электрика"},
+ pdf:"PDF",art:"Статья",
+ calcT:"Калькулятор электрика",kwA:"кВт → А",aKw:"А → кВт",ohm:"Сопротивление",power:"Мощность, кВт",curr:"Ток, А",volt:"Напряжение, В",phase:"Фазы",p1:"Одна фаза",p3:"Три фазы",cos:"cos φ",
+ resI:"Ток",resP:"Мощность",resR:"Сопротивление жилы",mat:"Материал",cu:"Медь",al:"Алюминий",len:"Длина, м",sec:"Сечение, мм²",loop:"Туда и обратно (×2)",
+ hintI:"Для зарядки 7,4 кВт от одной фазы нужен автомат на 32 А.",
+ chatWith:"Чат",msgPh:"Сообщение",sendB:"Отправить",
+ clientName:"Ана П.",
+ chat0:["Здравствуйте! Нужно заменить щит в квартире, 90 м². Когда можете посмотреть?","Добрый день. Могу завтра после 10:00. Пришлите фото текущего щита."],
+ reply:["Принял, посмотрю и отвечу сегодня.","Хорошо, договорились.","Уточните, пожалуйста, адрес и этаж."],
+ profT:"Мой профиль",status:"Принимаю заказы",statusHint:"Клиенты видят вас на карте, когда вы свободны.",radius:"Радиус работы",about:"Описание возможностей",
+ aboutTxt:"Мелкий ремонт, замена щитов, зарядные станции. Работаю в квартирах и частных домах.",
+ addW:"Добавить работу",wDesc:"Описание работы",wAdd:"Добавить",wPh:"Например: замена щита в квартире 70 м²",photo:"Фото",
+ guideT:"Что где в демо",guideP:"Нажмите на пункт, и демо откроет этот экран.",
+ g:[["Роль и язык","Один вход для клиента, другой для исполнителя. Язык переключается на лету: русский и испанский."],
+ ["Фильтры","Помещение и тип работ. Список и карта сразу показывают подходящих."],
+ ["Карта","Свободные специалисты на карте. Нажмите на метку, чтобы увидеть зону работы."],
+ ["Специалисты","Карточка с рейтингом и статусом. Внутри фото работ, описание и кнопка «Написать»."],
+ ["Нормы и вопрос","Вопрос по нормам и ответ со ссылкой на документ. Ниже документы и статьи с поиском."],
+ ["Калькулятор","Киловатты в амперы, амперы в киловатты, сопротивление жилы."],
+ ["Чат","Переписка клиента со специалистом внутри приложения."],
+ ["Профиль исполнителя","Статус, радиус работы, описание и добавление работ с фото."]],
+ gfoot:"В рабочей версии добавятся: админ-панель (статьи, анонсы, пользователи), публикация в App Store и Google Play, ещё языки."},
+es:{demo:"datos de demostración",city:"Madrid",client:"Cliente",pro:"Profesional",hints:"Guía",
+ tabMap:"Mapa",tabProfile:"Perfil",tabNorms:"Normas",tabCalc:"Cálculo",tabChat:"Chat",
+ room:"Inmueble",work:"Tipo de trabajo",all:"Todos",
+ rooms:{flat:"Piso",house:"Casa",block:"Edificio",industrial:"Industrial",factory:"Fábrica, planta"},
+ works:{small:"Reparación menor",emergency:"Averías",panel:"Cuadro eléctrico",full:"Instalación completa",solar:"Placas solares",ev:"Carga de coches"},
+ free:"Libre",busy:"Ocupado",km:"km",rev:"opiniones",found:"Profesionales encontrados",none:"No hay profesionales con este filtro. Quite uno de los filtros.",
+ schema:"Esquema del barrio, no es un mapa real",write:"Escribir",close:"Cerrar",area:"Zona de trabajo",abilities:"Sobre el profesional",myWorks:"Trabajos",
+ normsT:"Normas y reglamentos",askPh:"Pregunte por normas, por ejemplo: cuadro en casa de 300 m²",ask:"Preguntar",
+ q:"¿Qué normas hay que cumplir para instalar un cuadro eléctrico en una casa de 300 m²?",
+ a1:"En una vivienda de este tamaño el cuadro se divide en circuitos: alumbrado, tomas de corriente, cocina y cargas de alta potencia. Cada circuito lleva su protección magnetotérmica y los de tomas, además, un diferencial.",
+ a2:"El cuadro se coloca en un lugar accesible dentro de la vivienda, los circuitos se etiquetan y, al terminar, se comprueban el aislamiento y la toma de tierra.",
+ refs:["REBT · ITC-BT-25, apartado de protección","REBT · ITC-BT-19, requisitos generales"],
+ demoNote:"Demo: textos de ejemplo. En la versión final la respuesta se basa en sus documentos, con enlace al apartado y la página.",
+ docs:"Documentos y artículos",docsSearch:"Buscar dentro de los documentos",docSnip:{rebt:"Reglamento de baja tensión: requisitos generales de montaje, protección y verificación.",bt25:"Instalaciones interiores en viviendas: circuitos, protecciones, ubicación del cuadro.",bt52:"Infraestructura para la recarga de vehículos eléctricos: líneas, protecciones, esquemas.",art1:"Cómo elegir electricista: qué preguntar antes de empezar y qué documentos pedir al terminar."},
+ docTitle:{rebt:"REBT: reglamento de baja tensión",bt25:"ITC-BT-25: instalaciones en viviendas",bt52:"ITC-BT-52: recarga de vehículos eléctricos",art1:"Artículo: cómo elegir electricista"},
+ pdf:"PDF",art:"Artículo",
+ calcT:"Calculadora del electricista",kwA:"kW → A",aKw:"A → kW",ohm:"Resistencia",power:"Potencia, kW",curr:"Intensidad, A",volt:"Tensión, V",phase:"Fases",p1:"Monofásica",p3:"Trifásica",cos:"cos φ",
+ resI:"Intensidad",resP:"Potencia",resR:"Resistencia del conductor",mat:"Material",cu:"Cobre",al:"Aluminio",len:"Longitud, m",sec:"Sección, mm²",loop:"Ida y vuelta (×2)",
+ hintI:"Para cargar a 7,4 kW en monofásica hace falta un magnetotérmico de 32 A.",
+ chatWith:"Chat",msgPh:"Mensaje",sendB:"Enviar",
+ clientName:"Ana P.",
+ chat0:["¡Hola! Necesito cambiar el cuadro de un piso de 90 m². ¿Cuándo puede venir a verlo?","Buenas tardes. Mañana a partir de las 10:00. Envíeme una foto del cuadro actual."],
+ reply:["Recibido, lo reviso y le respondo hoy.","De acuerdo, quedamos así.","¿Puede indicar la dirección y la planta?"],
+ profT:"Mi perfil",status:"Acepto encargos",statusHint:"Los clientes le ven en el mapa mientras esté libre.",radius:"Radio de trabajo",about:"Descripción de servicios",
+ aboutTxt:"Reparaciones menores, cambio de cuadros, puntos de carga. Trabajo en pisos y casas.",
+ addW:"Añadir trabajo",wDesc:"Descripción del trabajo",wAdd:"Añadir",wPh:"Por ejemplo: cambio de cuadro en piso de 70 m²",photo:"Foto",
+ guideT:"Guía de la demo",guideP:"Pulse un punto y la demo abrirá esa pantalla.",
+ g:[["Rol e idioma","Una entrada para el cliente y otra para el profesional. El idioma cambia al instante: ruso y español."],
+ ["Filtros","Tipo de inmueble y de trabajo. La lista y el mapa muestran a quien encaja."],
+ ["Mapa","Profesionales libres en el mapa. Pulse una marca para ver su zona de trabajo."],
+ ["Profesionales","Ficha con valoración y estado. Dentro: fotos de trabajos, descripción y botón «Escribir»."],
+ ["Normas y pregunta","Pregunta sobre normas y respuesta con enlace al documento. Debajo, documentos y artículos con búsqueda."],
+ ["Calculadora","Kilovatios a amperios, amperios a kilovatios, resistencia del conductor."],
+ ["Chat","Conversación del cliente con el profesional dentro de la aplicación."],
+ ["Perfil del profesional","Estado, radio de trabajo, descripción y alta de trabajos con foto."]],
+ gfoot:"La versión final incluirá: panel de administración (artículos, anuncios, usuarios), publicación en App Store y Google Play, más idiomas."}
+};
+var PRO=[
+{id:"s1",n:"Carlos Méndez",ini:"CM",c:"#2A5BD0",x:92,y:78,r:4.9,rv:41,d:0.8,free:true,w:["small","panel","ev"],rm:["flat","house","block"],area:{ru:"Чамберри, Саламанка, радиус 8 км",es:"Chamberí, Salamanca, radio 8 km"},rad:62,
+ bio:{ru:"Двенадцать лет в электрике. Меняю щиты, ставлю зарядные станции.",es:"Doce años de oficio. Cambio cuadros e instalo puntos de recarga."},
+ wk:[{k:"panel",t:{ru:"Замена щита, квартира 90 м²",es:"Cambio de cuadro, piso de 90 m²"}},{k:"ev",t:{ru:"Зарядка 7,4 кВт в гараже",es:"Punto de 7,4 kW en garaje"}},{k:"small",t:{ru:"Розетки и свет, студия",es:"Enchufes y luz, estudio"}}]},
+{id:"s2",n:"Алексей Громов",ini:"АГ",c:"#B35A1B",x:228,y:62,r:4.8,rv:27,d:1.4,free:true,w:["emergency","small","full"],rm:["flat","house"],area:{ru:"Ретиро, Аточа, радиус 10 км",es:"Retiro, Atocha, radio 10 km"},rad:70,
+ bio:{ru:"Выезжаю на аварии в день обращения. Говорю по-русски и по-испански.",es:"Atiendo averías el mismo día. Hablo ruso y español."},
+ wk:[{k:"emergency",t:{ru:"Поиск замыкания в доме",es:"Localización de cortocircuito"}},{k:"full",t:{ru:"Проводка в новой квартире",es:"Cableado de piso nuevo"}},{k:"small",t:{ru:"Замена автоматов",es:"Cambio de magnetotérmicos"}}]},
+{id:"s3",n:"Lucía Ortega",ini:"LO",c:"#3F8A2B",x:158,y:150,r:5.0,rv:18,d:2.1,free:false,w:["solar","ev","full"],rm:["house","industrial","factory"],area:{ru:"Весь регион, радиус 40 км",es:"Toda la comunidad, radio 40 km"},rad:95,
+ bio:{ru:"Солнечные панели и зарядные станции для домов и предприятий.",es:"Placas solares y puntos de recarga para viviendas y empresas."},
+ wk:[{k:"solar",t:{ru:"Панели 6 кВт на крыше дома",es:"Placas de 6 kW en cubierta"}},{k:"ev",t:{ru:"Три зарядки на парковке офиса",es:"Tres puntos en parking de oficina"}},{k:"full",t:{ru:"Электрика склада",es:"Instalación de nave"}}]},
+{id:"s4",n:"Иван Соколов",ini:"ИС",c:"#7A4FD0",x:290,y:128,r:4.7,rv:33,d:3.0,free:true,w:["panel","full","small"],rm:["flat","block","house"],area:{ru:"Вальекас, Вилла-де-Вальекас, 12 км",es:"Vallecas, Villa de Vallecas, 12 km"},rad:78,
+ bio:{ru:"Переборка щитов в старых домах, полная замена проводки.",es:"Reforma de cuadros en edificios antiguos, cambio total de cableado."},
+ wk:[{k:"panel",t:{ru:"Щит в доме 1970 года",es:"Cuadro en edificio de 1970"}},{k:"full",t:{ru:"Проводка в двух комнатах",es:"Cableado en dos habitaciones"}},{k:"small",t:{ru:"Люстры и выключатели",es:"Lámparas e interruptores"}}]},
+{id:"s5",n:"Javier Ruiz",ini:"JR",c:"#C2410C",x:60,y:158,r:4.6,rv:52,d:3.6,free:true,w:["full","emergency","panel"],rm:["industrial","factory","block"],area:{ru:"Западные районы и промзоны, 25 км",es:"Zona oeste y polígonos, 25 km"},rad:88,
+ bio:{ru:"Силовые линии и щиты для производств. Работаю по договору.",es:"Líneas de fuerza y cuadros para industria. Trabajo con contrato."},
+ wk:[{k:"full",t:{ru:"Щитовая цеха 400 В",es:"Cuadro de taller a 400 V"}},{k:"emergency",t:{ru:"Аварийный выезд на завод",es:"Aviso urgente en planta"}},{k:"panel",t:{ru:"Новый ввод для склада",es:"Nueva acometida de nave"}}]},
+{id:"s6",n:"Марина Левченко",ini:"МЛ",c:"#0F766E",x:318,y:40,r:4.9,rv:22,d:4.2,free:false,w:["small","ev","solar"],rm:["flat","house"],area:{ru:"Северные районы, радиус 15 км",es:"Zona norte, radio 15 km"},rad:72,
+ bio:{ru:"Аккуратный мелкий ремонт и подключение зарядок.",es:"Reparaciones menores cuidadas y conexión de cargadores."},
+ wk:[{k:"ev",t:{ru:"Зарядка в доме, 11 кВт",es:"Cargador de 11 kW en casa"}},{k:"small",t:{ru:"Замена проводки на кухне",es:"Cableado de cocina"}},{k:"solar",t:{ru:"Мини-панели на балконе",es:"Mini placas en balcón"}}]}
+];
+var ICON={panel:'<path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+ev:'<path d="M9 3v6M15 3v6M7 9h10v3a5 5 0 0 1-10 0zM12 17v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+small:'<path d="M12 3v4M6 9h12v4a6 6 0 0 1-12 0zM12 19v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+solar:'<path d="M4 16l3-9h10l3 9zM9 7l-1 9M15 7l1 9M5.5 11.5h13M12 20v-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+emergency:'<path d="M13 3L5 14h6l-1 7 8-11h-6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
+full:'<path d="M4 20V9l8-5 8 5v11zM10 20v-6h4v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>'};
+var TILEC={panel:"#2A5BD0",ev:"#0F766E",small:"#B35A1B",solar:"#B7791F",emergency:"#B91C1C",full:"#4F46E5"};
+var ROOMS=["flat","house","block","industrial","factory"],WORKS=["small","emergency","panel","full","solar","ev"];
+var DOCS=["rebt","bt25","bt52","art1"];
+var S={role:"client",tab:"map",lang:"ru",room:"all",work:"all",sel:"s1",sheet:null,q:"",ask:false,calc:"kwA",
+ cv:{P:7.4,I:32,U:230,ph:1,cos:1,mat:"cu",L:25,S:2.5,loop:false},free:true,rad:60,myW:[],chat:{},hints:true,docq:""};
+var lang=function(){return T[S.lang]};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function pin(n,st){return '<i class="pin" data-n="'+n+'" style="'+(st||"left:-6px;top:-8px")+'">'+n+'</i>'}
+function fmt(n,d){return n.toLocaleString(S.lang==="ru"?"ru-RU":"es-ES",{maximumFractionDigits:d,minimumFractionDigits:d})}
+function filtered(){return PRO.filter(function(p){return (S.room==="all"||p.rm.indexOf(S.room)>-1)&&(S.work==="all"||p.w.indexOf(S.work)>-1)})}
+
+function tabsFor(){var L=lang();return S.role==="client"?[["map",L.tabMap,'<path d="M12 21s7-6.3 7-11a7 7 0 0 0-14 0c0 4.7 7 11 7 11z M12 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>',3],["norms",L.tabNorms,'<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/>',5],["calc",L.tabCalc,'<path d="M6 3h12v18H6zM9 7h6M9 11h2M13 11h2M9 15h2M13 15h2"/>',6],["chat",L.tabChat,'<path d="M4 5h16v11H9l-5 4z"/>',7]]:
+ [["profile",L.tabProfile,'<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0"/>',8],["norms",L.tabNorms,'<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/>',5],["calc",L.tabCalc,'<path d="M6 3h12v18H6zM9 7h6M9 11h2M13 11h2M9 15h2M13 15h2"/>',6],["chat",L.tabChat,'<path d="M4 5h16v11H9l-5 4z"/>',7]]}
+
+function renderTabs(){var el=$("#tabs");el.innerHTML=tabsFor().map(function(t){return '<button type="button" role="tab" data-tab="'+t[0]+'" aria-selected="'+(S.tab===t[0])+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+t[2]+'</svg>'+esc(t[1])+pin(t[3],"")+'</button>'}).join("")}
+
+function mapSvg(list){var L=lang();var sel=PRO.filter(function(p){return p.id===S.sel})[0];
+ var s='<svg viewBox="0 0 360 200" role="img" aria-label="'+esc(L.schema)+'"><rect width="360" height="200" fill="var(--map)"/>'+
+ '<path d="M-10 120C60 100 110 150 190 128S320 90 370 110" fill="none" stroke="var(--water)" stroke-width="16" stroke-linecap="round"/>'+
+ '<rect x="20" y="14" width="64" height="44" rx="10" fill="var(--park)"/><rect x="250" y="150" width="76" height="38" rx="10" fill="var(--park)"/>'+
+ '<g stroke="var(--street)" stroke-width="7" stroke-linecap="round" fill="none"><path d="M0 40H360"/><path d="M0 172H360"/><path d="M110 0V200"/><path d="M262 0V200"/><path d="M0 92L360 70" stroke-width="5"/></g>'+
+ '<g stroke="var(--street)" stroke-width="3" fill="none"><path d="M180 0V200"/><path d="M0 140H360"/><path d="M36 0V200"/><path d="M330 0V200"/></g>';
+ if(sel&&list.indexOf(sel)>-1){s+='<circle cx="'+sel.x+'" cy="'+sel.y+'" r="'+sel.rad*0.6+'" fill="var(--cu)" fill-opacity=".14" stroke="var(--cu)" stroke-dasharray="4 4" stroke-width="1.5"/>'}
+ list.forEach(function(p){var big=p.id===S.sel;s+='<g class="mpin" data-pro="'+p.id+'" tabindex="0" role="button" aria-label="'+esc(p.n)+'"><circle cx="'+p.x+'" cy="'+p.y+'" r="'+(big?15:12)+'" fill="'+(p.free?p.c:"var(--busy)")+'"/><text x="'+p.x+'" y="'+(p.y+3.3)+'">'+p.ini+'</text></g>'});
+ return s+'</svg><span class="note">'+esc(L.schema)+'</span>'}
+
+function chipRow(kind,items,label){var L=lang();var cur=S[kind];var h='<div class="chiplabel">'+esc(label)+'</div><div class="chips"><button type="button" class="chip" data-f="'+kind+'" data-v="all" aria-pressed="'+(cur==="all")+'">'+esc(L.all)+'</button>';
+ items.forEach(function(k){h+='<button type="button" class="chip" data-f="'+kind+'" data-v="'+k+'" aria-pressed="'+(cur===k)+'">'+esc(kind==="room"?L.rooms[k]:L.works[k])+'</button>'});return h+'</div>'}
+
+function viewMap(){var L=lang(),list=filtered();
+ var h='<div style="position:relative">'+pin(2,"right:2px;top:-4px")+chipRow("room",ROOMS,L.room)+'</div>'+chipRow("work",WORKS,L.work)+
+ '<div class="map" style="position:relative">'+pin(3,"left:8px;top:8px;z-index:3")+mapSvg(list)+'</div>'+
+ '<h3 style="position:relative;margin-top:2px">'+pin(4)+'<span style="margin-left:'+(S.hints?"24px":"0")+'">'+esc(L.found)+': '+list.length+'</span></h3><div class="list">';
+ if(!list.length)h+='<p style="color:var(--mute)">'+esc(L.none)+'</p>';
+ list.forEach(function(p){h+='<button type="button" class="card" data-open="'+p.id+'" aria-current="'+(p.id===S.sel)+'"><span class="ava" style="background:'+p.c+'">'+p.ini+'</span><span class="m"><b>'+esc(p.n)+'</b><span class="sub">'+p.w.map(function(k){return L.works[k]}).join(", ")+'</span><span class="rate">★ '+fmt(p.r,1)+' · '+p.rv+' '+L.rev+' · '+fmt(p.d,1)+' '+L.km+'</span></span><span class="st '+(p.free?"free":"busy")+'">'+(p.free?L.free:L.busy)+'</span></button>'});
+ return h+'</div>'}
+
+function tile(w,k){return '<div class="tile" style="background:linear-gradient(150deg,'+TILEC[k]+',color-mix(in srgb,'+TILEC[k]+' 55%,#000))"><svg viewBox="0 0 24 24">'+ICON[k]+'</svg>'+esc(w)+'</div>'}
+function sheetHtml(p){var L=lang();return '<div class="sheet" data-close="1"><div role="dialog" aria-label="'+esc(p.n)+'"><div style="display:flex;gap:12px;align-items:center"><span class="ava" style="background:'+p.c+';width:54px;height:54px;font-size:18px">'+p.ini+'</span><div style="flex:1"><b style="font-size:18px">'+esc(p.n)+'</b><div class="rate">★ '+fmt(p.r,1)+' · '+p.rv+' '+L.rev+'</div></div><span class="st '+(p.free?"free":"busy")+'">'+(p.free?L.free:L.busy)+'</span></div>'+
+ '<h3>'+esc(L.abilities)+'</h3><div style="font-size:14px">'+esc(p.bio[S.lang])+'</div><div class="row">'+p.w.map(function(k){return '<span class="tag">'+esc(L.works[k])+'</span>'}).join("")+'</div>'+
+ '<div class="rate" style="margin-top:8px">'+esc(L.area)+': '+esc(p.area[S.lang])+'</div><h3>'+esc(L.myWorks)+'</h3><div class="tiles">'+p.wk.map(function(w){return tile(w.t[S.lang],w.k)}).join("")+'</div>'+
+ '<div style="display:flex;gap:8px"><button class="btn" style="flex:1" data-chatwith="'+p.id+'" type="button">'+esc(L.write)+'</button><button class="btn line" data-closebtn="1" type="button">'+esc(L.close)+'</button></div></div></div>'}
+
+function viewNorms(){var L=lang();var q=S.docq.trim().toLowerCase();
+ var h='<div style="position:relative">'+pin(5,"left:-6px;top:-6px")+'<div class="search"><input id="askin" placeholder="'+esc(L.askPh)+'" value="'+esc(S.q)+'"><button class="btn" id="askbtn" type="button">'+esc(L.ask)+'</button></div></div>';
+ if(S.ask){h+='<div class="ans"><p class="q">'+esc(L.q)+'</p><p>'+esc(L.a1)+'</p><p>'+esc(L.a2)+'</p><div class="refs">'+L.refs.map(function(r){return '<span class="ref">'+esc(r)+'</span>'}).join("")+'</div><div class="demo">'+esc(L.demoNote)+'</div></div>'}
+ h+='<h3>'+esc(L.docs)+'</h3><div class="search"><input id="docin" placeholder="'+esc(L.docsSearch)+'" value="'+esc(S.docq)+'" aria-label="'+esc(L.docsSearch)+'"></div>';
+ var n=0;DOCS.forEach(function(k){var t=L.docTitle[k],sn=L.docSnip[k];if(q&&(t+" "+sn).toLowerCase().indexOf(q)<0)return;n++;
+  var hl=function(x){var e=esc(x);if(!q)return e;var i=x.toLowerCase().indexOf(q);return i<0?e:esc(x.slice(0,i))+"<mark>"+esc(x.slice(i,i+q.length))+"</mark>"+esc(x.slice(i+q.length))};
+  h+='<div class="doc"><div class="ic">'+(k==="art1"?"TXT":"PDF")+'</div><div><b>'+hl(t)+'</b><span>'+hl(sn)+'</span></div></div>'});
+ if(!n)h+='<p style="color:var(--mute)">'+esc(L.none)+'</p>';
+ return h}
+
+function calcOut(){var L=lang(),c=S.cv,k=Math.sqrt(3),res="",unit="",lab="",hint="";
+ var f=c.ph===3?k:1;
+ if(S.calc==="kwA"){var I=c.P*1000/(f*c.U*c.cos);res=fmt(I,1);unit="A";lab=L.resI;hint=(c.P===7.4&&c.ph===1&&c.U===230)?L.hintI:""}
+ else if(S.calc==="aKw"){var P=f*c.U*c.I*c.cos/1000;res=fmt(P,2);unit="kW";lab=L.resP}
+ else{var rho=c.mat==="cu"?0.0175:0.0282;var R=rho*c.L*(c.loop?2:1)/c.S;res=fmt(R,3);unit="Ω";lab=L.resR;hint="ρ = "+(c.mat==="cu"?"0,0175":"0,0282")+" Ω·mm²/m"}
+ if(S.lang==="ru")unit=unit==="A"?"А":unit==="kW"?"кВт":"Ом";
+ return '<small>'+esc(lab)+'</small><strong>'+res+' '+unit+'</strong>'+(hint?'<em>'+esc(hint)+'</em>':"")}
+function viewCalc(){var L=lang(),c=S.cv;
+ var seg='<div class="seg" style="width:100%;display:flex;position:relative">'+pin(6,"left:-6px;top:-8px")+[["kwA",L.kwA],["aKw",L.aKw],["ohm",L.ohm]].map(function(x){return '<button type="button" style="flex:1;padding:7px 4px" data-calc="'+x[0]+'" aria-pressed="'+(S.calc===x[0])+'">'+esc(x[1])+'</button>'}).join("")+'</div>';
+ var body='';
+ if(S.calc==="ohm"){body='<div class="grid2"><div><label for="cm">'+esc(L.mat)+'</label><select id="cm" data-k="mat"><option value="cu"'+(c.mat==="cu"?" selected":"")+'>'+esc(L.cu)+'</option><option value="al"'+(c.mat==="al"?" selected":"")+'>'+esc(L.al)+'</option></select></div><div><label for="cl">'+esc(L.len)+'</label><input id="cl" data-k="L" type="number" inputmode="decimal" value="'+c.L+'" min="0"></div></div>'+
+  '<div class="grid2"><div><label for="cs">'+esc(L.sec)+'</label><select id="cs" data-k="S">'+[1.5,2.5,4,6,10,16].map(function(v){return '<option value="'+v+'"'+(c.S===v?" selected":"")+'>'+fmt(v,1)+'</option>'}).join("")+'</select></div><div><label for="cp">'+esc(L.loop)+'</label><select id="cp" data-k="loop"><option value="0"'+(c.loop?"":" selected")+'>1×</option><option value="1"'+(c.loop?" selected":"")+'>2×</option></select></div></div>'}
+ else{body='<div class="grid2"><div><label for="cv1">'+esc(S.calc==="kwA"?L.power:L.curr)+'</label><input id="cv1" data-k="'+(S.calc==="kwA"?"P":"I")+'" type="number" inputmode="decimal" step="0.1" min="0" value="'+(S.calc==="kwA"?c.P:c.I)+'"></div><div><label for="cu1">'+esc(L.volt)+'</label><select id="cu1" data-k="U"><option value="230"'+(c.U===230?" selected":"")+'>230</option><option value="400"'+(c.U===400?" selected":"")+'>400</option></select></div></div>'+
+  '<div class="grid2"><div><label for="cph">'+esc(L.phase)+'</label><select id="cph" data-k="ph"><option value="1"'+(c.ph===1?" selected":"")+'>'+esc(L.p1)+'</option><option value="3"'+(c.ph===3?" selected":"")+'>'+esc(L.p3)+'</option></select></div><div><label for="cco">'+esc(L.cos)+'</label><select id="cco" data-k="cos">'+[1,0.95,0.9,0.8].map(function(v){return '<option value="'+v+'"'+(c.cos===v?" selected":"")+'>'+fmt(v,2)+'</option>'}).join("")+'</select></div></div>'}
+ return '<div class="calc"><h3 style="margin-top:2px">'+esc(L.calcT)+'</h3>'+seg+body+'<div class="res" id="res">'+calcOut()+'</div></div>'}
+
+function partner(){var L=lang();if(S.role==="pro")return{k:"client",n:L.clientName,ini:"АП",c:"#2A5BD0"};var p=PRO.filter(function(x){return x.id===S.sel})[0];return{k:p.id,n:p.n,ini:p.ini,c:p.c}}
+function thread(){var pr=partner(),L=lang();if(!S.chat[pr.k]){var m0=L.chat0;S.chat[pr.k]=[{me:S.role==="client",t:m0[0],tm:"10:12"},{me:S.role!=="client",t:m0[1],tm:"10:20"}]}return S.chat[pr.k]}
+function viewChat(){var L=lang(),pr=partner(),th=thread();
+ return '<div class="chat" style="min-height:560px"><div class="head" style="position:relative">'+pin(7,"left:-6px;top:-8px")+'<span class="ava" style="background:'+pr.c+'">'+pr.ini+'</span><div><b>'+esc(pr.n)+'</b><div class="rate">'+esc(L.chatWith)+'</div></div></div><div class="msgs" id="msgs">'+th.map(function(m){return '<div class="msg'+(m.me?" me":"")+'">'+esc(m.t)+'<time>'+m.tm+'</time></div>'}).join("")+'</div><form class="send" id="sendf"><input id="msgin" placeholder="'+esc(L.msgPh)+'" aria-label="'+esc(L.msgPh)+'" autocomplete="off"><button class="btn" type="submit">'+esc(L.sendB)+'</button></form></div>'}
+
+function viewProfile(){var L=lang();
+ var h='<h3 style="margin-top:2px;position:relative">'+pin(8)+'<span style="margin-left:'+(S.hints?"24px":"0")+'">'+esc(L.profT)+'</span></h3><div class="card" style="cursor:default"><span class="ava" style="background:#2A5BD0">АГ</span><span class="m"><b>Алексей Громов</b><span class="sub">'+esc(L.pro)+'</span></span></div>'+
+ '<div class="toggle"><div><b>'+esc(L.status)+'</b><div class="rate">'+esc(L.statusHint)+'</div></div><button class="sw" id="sw" type="button" aria-pressed="'+S.free+'" aria-label="'+esc(L.status)+'"></button></div>'+
+ '<label class="chiplabel" for="rad" style="display:block;margin-top:12px">'+esc(L.radius)+': <b id="radv">'+S.rad+'</b> '+esc(L.km)+'</label><input id="rad" type="range" min="5" max="80" step="5" value="'+S.rad+'">'+
+ '<label class="chiplabel" for="abt" style="display:block;margin-top:12px">'+esc(L.about)+'</label><textarea id="abt">'+esc(L.aboutTxt)+'</textarea>'+
+ '<h3>'+esc(L.myWorks)+'</h3><div class="tiles" id="mw">'+PRO[1].wk.map(function(w){return tile(w.t[S.lang],w.k)}).join("")+S.myW.map(function(w){return tile(w,"small")}).join("")+'</div>'+
+ '<h3>'+esc(L.addW)+'</h3><textarea id="wd" placeholder="'+esc(L.wPh)+'" aria-label="'+esc(L.wDesc)+'"></textarea><div style="display:flex;gap:8px;margin-top:8px"><button class="btn line" type="button" disabled style="opacity:.7">'+esc(L.photo)+'</button><button class="btn" id="wadd" type="button" style="flex:1">'+esc(L.wAdd)+'</button></div>';
+ return h}
+
+function renderGuide(){var L=lang();$("#gt").textContent=L.guideT;$("#gp").textContent=L.guideP;$("#gf").textContent=L.gfoot;
+ $("#gl").innerHTML=L.g.map(function(g,i){return '<li><button type="button" data-g="'+(i+1)+'"><i>'+(i+1)+'</i><span><b>'+esc(g[0])+'</b><span>'+esc(g[1])+'</span></span></button></li>'}).join("")}
+function renderTop(){var L=lang();$("#bn").textContent=$("#ab").textContent=S.lang==="ru"?"Фаза":"Fase";$("#demotag").textContent=L.demo;$("#city").textContent=L.city;$("#rClient").textContent=L.client;$("#rPro").textContent=L.pro;$("#hintbtn").textContent=L.hints;
+ document.querySelectorAll("[data-role]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.role===S.role)});
+ document.querySelectorAll("[data-lang]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.lang===S.lang)});
+ document.documentElement.lang=S.lang;$("#who").textContent=S.role==="client"?"АП":"АГ"}
+
+function render(){renderTop();renderTabs();renderGuide();
+ var v=S.tab==="map"?viewMap():S.tab==="norms"?viewNorms():S.tab==="calc"?viewCalc():S.tab==="chat"?viewChat():viewProfile();
+ var sc=$("#screen");sc.innerHTML=v;
+ var ph=$(".phone");var old=ph.querySelector(".sheet");if(old)old.remove();
+ if(S.sheet){var p=PRO.filter(function(x){return x.id===S.sheet})[0];ph.insertAdjacentHTML("beforeend",sheetHtml(p))}
+ if(S.tab==="chat"){var m=$("#msgs");if(m)m.scrollTop=m.scrollHeight}}
+
+function setTab(t){S.tab=t;S.sheet=null;render()}
+function guideTo(n){var map={1:function(){S.role="client";S.tab="map"},2:function(){S.role="client";S.tab="map"},3:function(){S.role="client";S.tab="map"},4:function(){S.role="client";S.tab="map";S.sheet="s1"},5:function(){S.tab="norms";S.ask=true},6:function(){S.tab="calc"},7:function(){S.tab="chat"},8:function(){S.role="pro";S.tab="profile"}};
+ if(n===5||n===6||n===7){if(S.role==="pro"&&n!==8){}}
+ map[n]();if(S.role==="pro"&&S.tab==="map")S.tab="profile";S.sheet=n===4?"s1":null;render();if(window.innerWidth<=900&&n!==1)$(".phone").scrollIntoView({behavior:"smooth",block:"start"})}
+
+document.addEventListener("click",function(e){
+ var b=e.target.closest("button,[data-pro]");if(!b){if(e.target.dataset&&e.target.dataset.close){S.sheet=null;render()}return}
+ if(b.id==="hintbtn"){S.hints=!S.hints;document.body.classList.toggle("hints",S.hints);b.setAttribute("aria-pressed",S.hints);$("#guide").hidden=!S.hints;return}
+ if(b.dataset.role){S.role=b.dataset.role;S.tab=S.role==="client"?"map":"profile";S.sheet=null;render();return}
+ if(b.dataset.lang){S.lang=b.dataset.lang;S.chat={};render();return}
+ if(b.dataset.tab){setTab(b.dataset.tab);return}
+ if(b.dataset.f){S[b.dataset.f]=b.dataset.v;var sc=$(".chips");render();return}
+ if(b.dataset.pro){S.sel=b.dataset.pro;render();var c=$('[data-open="'+S.sel+'"]');if(c)c.scrollIntoView({block:"nearest"});return}
+ if(b.dataset.open){S.sel=b.dataset.open;S.sheet=b.dataset.open;render();return}
+ if(b.dataset.closebtn){S.sheet=null;render();return}
+ if(b.dataset.chatwith){S.sel=b.dataset.chatwith;S.sheet=null;S.tab="chat";render();return}
+ if(b.dataset.calc){S.calc=b.dataset.calc;render();return}
+ if(b.dataset.g){guideTo(+b.dataset.g);return}
+ if(b.id==="askbtn"){S.ask=true;S.q=$("#askin").value;render();return}
+ if(b.id==="sw"){S.free=!S.free;b.setAttribute("aria-pressed",S.free);return}
+ if(b.id==="wadd"){var t=$("#wd").value.trim();if(t){S.myW.push(t);S.tab="profile";render();var mw=$("#mw");if(mw)mw.lastElementChild.scrollIntoView({block:"nearest"})}return}
+});
+document.addEventListener("input",function(e){var t=e.target;
+ if(t.id==="docin"){S.docq=t.value;var pos=t.selectionStart;render();var n=$("#docin");n.focus();n.setSelectionRange(pos,pos);return}
+ if(t.id==="rad"){S.rad=+t.value;$("#radv").textContent=t.value;return}
+ if(t.dataset&&t.dataset.k){var k=t.dataset.k,v=t.value;if(k==="mat")S.cv.mat=v;else if(k==="loop")S.cv.loop=v==="1";else S.cv[k]=parseFloat(v)||0;$("#res").innerHTML=calcOut()}});
+document.addEventListener("change",function(e){var t=e.target;if(t.dataset&&t.dataset.k){var k=t.dataset.k;if(k==="U"||k==="ph"||k==="cos"||k==="S")S.cv[k]=parseFloat(t.value);if(k==="mat")S.cv.mat=t.value;if(k==="loop")S.cv.loop=t.value==="1";$("#res").innerHTML=calcOut()}});
+document.addEventListener("keydown",function(e){var g=e.target.closest&&e.target.closest("[data-pro]");if(g&&(e.key==="Enter"||e.key===" ")){e.preventDefault();g.dispatchEvent(new MouseEvent("click",{bubbles:true}))}});
+document.addEventListener("submit",function(e){if(e.target.id!=="sendf")return;e.preventDefault();var i=$("#msgin"),v=i.value.trim();if(!v)return;
+ var th=thread(),L=lang();th.push({me:true,t:v,tm:"10:3"+(th.length%10)});i.value="";var key=partner().k;render();$("#msgin").focus();
+ setTimeout(function(){if(S.chat[key]){S.chat[key].push({me:false,t:L.reply[Math.floor(Math.random()*L.reply.length)],tm:"10:4"+(S.chat[key].length%10)});if(S.tab==="chat"&&partner().k===key){render()}}},900)});
+document.body.classList.add("hints");render();
+})();
+</script>
+
+</html>
