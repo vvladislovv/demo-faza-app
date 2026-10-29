@@ -7,7 +7,8 @@
 <title>Приложение Фаза</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet"></noscript>
 <style>
 /* Фаза: демо мобильного приложения. Один акцент (медь), тонкие рамки, одна кривая движения.
    Палитра из цветов кабеля: изоляция синяя, жила медная, заземление зелёное. */
@@ -273,6 +274,8 @@ body.hints .appbar [data-pin]::after{left:-8px}
 </main>
 
 <script>
+/* Если что-то сломается в чужом браузере, покажем причину вместо пустой страницы */
+window.addEventListener("error",function(e){var s=document.getElementById("screen");if(s&&!s.firstChild){s.innerHTML='<div style="padding:20px;color:#B91C1C;font:14px system-ui">Не удалось запустить демо: '+String(e.message).replace(/[<>&]/g,"")+'. Откройте ссылку в Chrome или Safari последней версии.</div>'}});
 (function(){
 "use strict";
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>Array.from(r.querySelectorAll(s));
@@ -593,12 +596,13 @@ document.addEventListener("submit",e=>{e.preventDefault();const id=e.target.id;
  if(id==="askf"&&!S.asking){S.asking=true;S.ask=true;S.q=$("#askin").value;const slot=$("#ansslot"),btn=$("#askbtn");btn.disabled=true;
   slot.innerHTML='<div class="ans"><span class="dots" aria-label="…"><i></i><i></i><i></i></span></div>';
   setTimeout(()=>{S.asking=false;const s=$("#ansslot");if(s)s.innerHTML=ansHtml();const bb=$("#askbtn");if(bb)bb.disabled=false},700)}});
-mqNarrow.addEventListener("change",()=>{document.body.classList.remove("guide-open");document.body.classList.toggle("guide-off",!mqNarrow.matches&&!S.hints)});
-
 /* старт: на телефоне панель «Что где» закрыта и открывается по кнопке */
 document.body.classList.toggle("hints",true);
 $("#hintbtn").setAttribute("aria-pressed",!mqNarrow.matches);
 fullRender(null);
+/* старые браузеры: слушатель добавляем после первого рендера и только если он поддерживается */
+const onMq=()=>{document.body.classList.remove("guide-open");document.body.classList.toggle("guide-off",!mqNarrow.matches&&!S.hints)};
+if(mqNarrow.addEventListener)mqNarrow.addEventListener("change",onMq);else if(mqNarrow.addListener)mqNarrow.addListener(onMq);
 })();
 </script>
 </body></html>
