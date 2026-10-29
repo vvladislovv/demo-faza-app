@@ -24,9 +24,10 @@ h3{margin:22px 0 10px;font-size:16px;font-weight:700;letter-spacing:-.005em}
 [hidden]{display:none!important}
 
 /* шапка страницы */
-.top{max-width:1080px;margin:0 auto 24px;display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.top{max-width:1320px;margin:0 auto 24px;display:flex;flex-wrap:wrap;align-items:center;gap:12px}
 .brand{display:flex;align-items:center;gap:10px;font:600 19px var(--display);letter-spacing:-.03em;margin-right:auto}
 .brand svg{width:36px;height:36px;flex:none}
+.brand b{display:none}
 .brand small{font:600 12px var(--font);letter-spacing:0;color:var(--mute);background:var(--surf);border-radius:999px;padding:4px 11px}
 .seg{--n:2;--i:0;position:relative;display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--surf2);border-radius:14px;padding:3px}
 .top .seg{background:var(--surf)}
@@ -38,15 +39,18 @@ h3{margin:22px 0 10px;font-size:16px;font-weight:700;letter-spacing:-.005em}
 .ghost:active,.btn:active,.card:active,.chip:active,.tab:active{transform:scale(.97)}
 
 /* раскладка */
-.stage{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:48px;align-items:start}
-body.guide-off .stage{grid-template-columns:minmax(0,420px);justify-content:center}
+.stage{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;align-items:start}
+body.guide-off .stage{grid-template-columns:minmax(0,1fr)}
 body.guide-off .guide{display:none}
-.device{display:flex;justify-content:center}
-.app{position:relative;width:100%;max-width:410px;height:clamp(620px,calc(100dvh - 130px),800px);display:flex;flex-direction:column;overflow:hidden;background:var(--surf);border-radius:50px;box-shadow:0 0 0 10px var(--ink),0 40px 70px -30px var(--shadow)}
+.device{display:block}
+.app{position:relative;width:100%;height:calc(100dvh - 112px);min-height:620px;display:flex;flex-direction:column;overflow:hidden;background:var(--surf);border-radius:32px;box-shadow:0 30px 60px -40px var(--shadow)}
 .appbar{display:flex;align-items:center;gap:10px;padding:22px 22px 8px;flex:none}
 .appbar b{font:600 18px var(--display);letter-spacing:-.03em}
 .appbar .city{font-size:12.5px;font-weight:700;color:var(--ink);background:var(--surf2);padding:4px 11px;border-radius:999px}
-.who{margin-left:auto;width:38px;height:38px;border-radius:50%;background:var(--ink);color:var(--volt);display:grid;place-items:center;font-weight:800;font-size:13px}
+.appbar .demo{display:none;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:700;color:var(--mute);background:var(--surf2);padding:3px 10px;border-radius:999px}
+.appbar .city{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hq{display:none;font:800 18px var(--font)}
+.who{flex:none;margin-left:auto;width:38px;height:38px;border-radius:50%;background:var(--ink);color:var(--volt);display:grid;place-items:center;font-weight:800;font-size:13px}
 .screen{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:10px 20px 28px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .screen::-webkit-scrollbar{display:none}
 .screen[data-tab="chat"]{overflow:hidden;display:flex;flex-direction:column;padding-bottom:10px}
@@ -227,9 +231,54 @@ body.hints .map[data-pin]::after{left:10px;top:10px}
 body.hints .seg[data-pin]::after{left:-8px;top:-10px}
 body.hints .top .seg[data-pin]::after{box-shadow:0 0 0 3px var(--bg),0 0 0 4px rgba(18,20,28,.12)}
 
-/* планшет и телефон */
+/* ПК: полноценное окно приложения, вкладки сверху, карта рядом со списком */
+@media (min-width:901px){
+ .screen{padding:8px 36px 40px}
+ .ttl{font-size:28px;margin:8px 0 22px}
+ .appbar{order:1;padding:22px 36px 12px}
+ .tabbar{order:2;display:flex;gap:6px;padding:4px 36px 14px;box-shadow:0 1px 0 var(--line)}
+ .screen{order:3}
+ .tabbar .ind{display:none}
+ .tab{flex-direction:row;gap:8px;min-height:44px;padding:0 18px;font-size:14px;border-radius:999px;transition:background-color .25s var(--ease),color .2s}
+ .tab[aria-selected="true"]{background:var(--volt)}
+ .tab:not([aria-selected="true"]):hover{background:var(--surf2);color:var(--ink)}
+ body.hints .tab[data-pin]::after{left:auto;right:-6px;top:-8px}
+ .appbar .demo{display:none}
+ .map-split{display:grid;grid-template-columns:minmax(340px,420px) minmax(0,1fr);grid-template-areas:"ttl map" "filters map" "found map";column-gap:40px;align-content:start}
+ .map-split .ttl{grid-area:ttl}.map-split .filters{grid-area:filters}.map-split #found{grid-area:found}
+ .map-split .map{grid-area:map;margin:0;position:sticky;top:8px;align-self:start}
+ .norms-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"ttl ttl" "ask docs" "ans docs";column-gap:48px;align-content:start}
+ .norms-split .ttl{grid-area:ttl}.norms-split .ask{grid-area:ask}.norms-split #ansslot{grid-area:ans}.norms-split .docs{grid-area:docs}
+ .docs h3{margin-top:0}
+ .calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,420px);grid-template-areas:"ttl ttl" "seg res" "body res";column-gap:48px;align-content:start}
+ .calc .ttl{grid-area:ttl}.calc #calcseg{grid-area:seg}.calc #calcbody{grid-area:body}
+ .calc .res{grid-area:res;margin-top:0;align-self:start;padding:30px}
+ .calc .res strong{font-size:46px}
+ .split2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:48px;align-items:start}
+ .pc>h3:first-child{margin-top:0}
+ .chat{max-width:780px;margin:0 auto;width:100%}
+ .screen[data-tab="chat"]{padding-bottom:24px}
+ .chipwrap{margin:0 -4px 8px}.chips{padding:2px 4px 4px}.chipwrap::after{display:none}
+ /* карточка специалиста: окно по центру */
+ .grab{display:none}
+ .panel{left:50%;right:auto;bottom:auto;top:50%;width:min(540px,92%);max-height:88%;border-radius:32px;opacity:0;transform:translate(-50%,-46%) scale(.96);transition:transform .25s ease,opacity .2s ease;box-shadow:0 40px 80px -30px var(--shadow)}
+ .sheet.open .panel{opacity:1;transform:translate(-50%,-50%);transition:transform .4s var(--ease),opacity .25s ease}
+ .pbody{padding:26px 28px 28px}
+ .toast{bottom:32px}
+}
+/* планшет и телефон: приложение на весь экран */
 @media (max-width:900px){
- .stage{grid-template-columns:minmax(0,1fr);gap:0}
+ body{padding:0;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+ .top{flex:none;max-width:none;margin:0;flex-wrap:nowrap;gap:8px;padding:max(8px,env(safe-area-inset-top)) 12px 10px}
+ .brand small{display:none}
+ .top .role{flex:none}
+ .hint{width:44px;padding:0;display:grid;place-items:center;border-radius:50%}
+ .hint .ht{display:none}.hint .hq{display:block}
+ .stage{flex:1;min-height:0;min-width:0;width:100%;margin:0;display:block}
+ .device{height:100%;display:flex;justify-content:center}
+ .app{max-width:640px;height:100%;min-height:0;border-radius:28px 28px 0 0;box-shadow:none}
+ .appbar{padding:14px 20px 4px}
+ .appbar .demo{display:inline-block}
  .guide{position:fixed;inset:0;z-index:100;border-radius:0;overflow-y:auto;padding:max(24px,env(safe-area-inset-top)) 20px 28px;transform:translateY(100%);visibility:hidden;box-shadow:none;transition:transform .4s var(--ease),visibility 0s .4s}
  body.guide-open .guide{transform:none;visibility:visible;transition-delay:0s}
  body.guide-open{overflow:hidden}
@@ -238,16 +287,11 @@ body.hints .top .seg[data-pin]::after{box-shadow:0 0 0 3px var(--bg),0 0 0 4px r
  .gclose{display:block;float:right;border:0;background:var(--surf2);border-radius:14px;min-height:42px;padding:0 16px;font-weight:700}
 }
 @media (max-width:560px){
- body{padding:0;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
- .top{flex:none;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand hint" "role lang";gap:8px;margin:0;padding:max(10px,env(safe-area-inset-top)) 14px 12px}
- .brand{grid-area:brand;margin:0}.brand b{display:none}
- .top .role{grid-area:role}.top .lang{grid-area:lang}.top .hint{grid-area:hint}
- .top .role button{padding:8px 6px}
- .stage{flex:1;min-height:0;min-width:0;width:100%;margin:0;display:block}
- .device{height:100%}
- .app{max-width:none;height:100%;border-radius:28px 28px 0 0;box-shadow:none}
- .appbar{padding:16px 20px 6px}
- .guide{padding-top:max(20px,env(safe-area-inset-top))}
+ .app{max-width:none}
+ .brand{display:none}
+ .top .role{flex:1;min-width:0}
+ .top .role button,.top .lang button{font-size:13px;padding:8px 4px}
+ .top .lang button{padding:8px 10px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-delay:0s!important}}
 </style></head>
@@ -259,13 +303,13 @@ body.hints .top .seg[data-pin]::after{box-shadow:0 0 0 3px var(--bg),0 0 0 4px r
   </div>
   <div class="seg role" role="group" aria-label="Роль" data-pin="1"><button type="button" data-act="role" data-v="client" id="rClient" aria-pressed="true">Клиент</button><button type="button" data-act="role" data-v="pro" id="rPro" aria-pressed="false">Исполнитель</button></div>
   <div class="seg lang" role="group" aria-label="Язык"><button type="button" data-act="lang" data-v="ru" aria-pressed="true">RU</button><button type="button" data-act="lang" data-v="es" aria-pressed="false">ES</button></div>
-  <button class="ghost hint" id="hintbtn" type="button" data-act="hint" aria-pressed="true">Что где</button>
+  <button class="ghost hint" id="hintbtn" type="button" data-act="hint" aria-pressed="true" aria-label="Что где"><span class="ht">Что где</span><b class="hq" aria-hidden="true">?</b></button>
 </header>
 
 <main class="stage">
   <section class="device" aria-label="Приложение">
     <div class="app" id="app">
-      <div class="appbar"><b id="ab">Фаза</b><span id="city">Мадрид</span><div class="who" id="who" aria-hidden="true">АП</div></div>
+      <div class="appbar"><b id="ab">Фаза</b><span class="city" id="city">Мадрид</span><span class="demo" id="demotag2">демо-данные</span><div class="who" id="who" aria-hidden="true">АП</div></div>
       <div class="screen" id="screen"></div>
       <nav class="tabbar" id="tabs" role="tablist"></nav>
       <div class="sheet" id="sheet" aria-hidden="true">
@@ -441,7 +485,7 @@ function foundBlock(list,anim){const l=L();
 const mapInner=list=>mapSvg(list);
 function updateFound(){const list=filtered();$("#mapbox").innerHTML=mapInner(list);$("#found").innerHTML=foundBlock(list,true)}
 const viewMap=()=>{const l=L(),list=filtered();
- return `<h1 class="ttl">${esc(XX().tMap)}</h1>`+chipRow("room",ROOMS,l.room,2)+chipRow("work",WORKS,l.work)+`<div class="map" id="mapbox" data-pin="3">${mapInner(list)}</div><div id="found">${foundBlock(list,false)}</div>`};
+ return `<div class="split map-split"><h1 class="ttl">${esc(XX().tMap)}</h1><div class="filters">`+chipRow("room",ROOMS,l.room,2)+chipRow("work",WORKS,l.work)+`</div><div class="map" id="mapbox" data-pin="3">${mapInner(list)}</div><div id="found">${foundBlock(list,false)}</div></div>`};
 
 /* ---------- карточка специалиста ---------- */
 function tile(title,k,img){return `<div class="tile${img?" img":""}" style="${img?`background-image:url(${img})`:`background:linear-gradient(150deg,${TILEC[k]},color-mix(in srgb,${TILEC[k]} 55%,#000))`}">${img?"":`<svg viewBox="0 0 24 24">${ICON[k]}</svg>`}<span>${esc(title)}</span></div>`}
@@ -475,9 +519,9 @@ function docList(){const l=L(),q=S.docq.trim().toLowerCase();
  const rows=DOCS.filter(k=>!q||(l.docTitle[k]+" "+l.docSnip[k]).toLowerCase().includes(q)).map((k,i)=>`<div class="doc" style="animation-delay:${i*40}ms"><div class="ic">${k==="art1"?"TXT":"PDF"}</div><div><b>${hl(l.docTitle[k])}</b><span>${hl(l.docSnip[k])}</span></div></div>`);
  return rows.length?rows.join(""):`<div class="empty">${esc(l.none)}</div>`}
 const viewNorms=()=>{const l=L();
- return `<h1 class="ttl">${esc(l.normsT)}</h1><form class="ask" id="askf" data-pin="5"><input id="askin" placeholder="${esc(l.askPh)}" value="${esc(S.q)}" aria-label="${esc(l.ask)}" enterkeyhint="send" autocomplete="off"><button class="btn" id="askbtn" type="submit">${esc(l.ask)}</button></form>
+ return `<div class="split norms-split"><h1 class="ttl">${esc(l.normsT)}</h1><form class="ask" id="askf" data-pin="5"><input id="askin" placeholder="${esc(l.askPh)}" value="${esc(S.q)}" aria-label="${esc(l.ask)}" enterkeyhint="send" autocomplete="off"><button class="btn" id="askbtn" type="submit">${esc(l.ask)}</button></form>
  <div id="ansslot" aria-live="polite">${S.ask?ansHtml():""}</div>
- <h3>${esc(l.docs)}</h3><input class="field" id="docin" type="search" placeholder="${esc(l.docsSearch)}" aria-label="${esc(l.docsSearch)}" value="${esc(S.docq)}"><div id="doclist">${docList()}</div>`};
+ <div class="docs"><h3>${esc(l.docs)}</h3><input class="field" id="docin" type="search" placeholder="${esc(l.docsSearch)}" aria-label="${esc(l.docsSearch)}" value="${esc(S.docq)}"><div id="doclist">${docList()}</div></div></div>`};
 
 /* ---------- калькулятор ---------- */
 function calcCalc(){const c=S.cv,k=Math.sqrt(3),f=c.ph===3?k:1,l=L(),u=XX().unit;let v,unit,lab,hint="",d;
@@ -526,14 +570,14 @@ function sendMsg(v){const l=L(),key=partner().k,m=$("#msgs");
 /* ---------- профиль исполнителя ---------- */
 const radPct=()=>((S.rad-5)/75*100)+"%";
 const viewProfile=()=>{const l=L(),x=XX();
- return `<h1 class="ttl" data-pin="8">${esc(l.profT)}</h1>
+ return `<h1 class="ttl" data-pin="8">${esc(l.profT)}</h1><div class="split2"><div class="pc">
  <div class="card" style="cursor:default"><span class="ava" style="background:#B35A1B">АГ</span><span class="m"><b>Алексей Громов</b><span class="sub">${esc(l.pro)}</span></span><span class="st ${S.free?"free":"busy"}" id="pst">${esc(S.free?x.statusOn:x.statusOff)}</span></div>
  <div class="toggle"><div><b>${esc(l.status)}</b><div class="rate">${esc(l.statusHint)}</div></div><button class="sw" id="sw" type="button" data-act="sw" role="switch" aria-checked="${S.free}" aria-label="${esc(l.status)}"></button></div>
  <label class="flabel" for="rad" style="display:block;margin-top:14px">${esc(l.radius)}: <b id="radv" style="color:var(--ink);font-weight:800">${S.rad} ${esc(l.km)}</b></label><input id="rad" type="range" min="5" max="80" step="5" value="${S.rad}" style="--p:${radPct()}">
- <label class="flabel" for="abt" style="display:block;margin-top:14px">${esc(l.about)}</label><textarea id="abt">${esc(S.about===null?l.aboutTxt:S.about)}</textarea>
+ <label class="flabel" for="abt" style="display:block;margin-top:14px">${esc(l.about)}</label><textarea id="abt">${esc(S.about===null?l.aboutTxt:S.about)}</textarea></div><div class="pc">
  <h3>${esc(l.myWorks)}</h3><div class="tiles" id="mw">${worksOf(PRO[1])}</div>
  <h3>${esc(l.addW)}</h3><textarea id="wd" placeholder="${esc(l.wPh)}" aria-label="${esc(l.wDesc)}"></textarea>
- <div class="addrow"><input type="file" id="wfile" accept="image/*" hidden><span class="thumb" id="wprev" hidden></span><button class="btn line" type="button" data-act="wphoto">${esc(l.photo)}</button><button class="btn" id="wadd" type="button" data-act="wadd" style="flex:1">${esc(l.wAdd)}</button></div>`};
+ <div class="addrow"><input type="file" id="wfile" accept="image/*" hidden><span class="thumb" id="wprev" hidden></span><button class="btn line" type="button" data-act="wphoto">${esc(l.photo)}</button><button class="btn" id="wadd" type="button" data-act="wadd" style="flex:1">${esc(l.wAdd)}</button></div></div></div>`};
 
 /* ---------- каркас ---------- */
 const VIEWS={map:viewMap,norms:viewNorms,calc:viewCalc,chat:viewChat,profile:viewProfile};
@@ -546,7 +590,7 @@ function show(anim,keep){const sc=$("#screen"),top=keep?sc.scrollTop:0;
  sc.classList.remove("fwd","back","fade");if(anim){void sc.offsetWidth;sc.classList.add(anim)}
  afterMount()}
 function syncSegs(){$$(".seg").forEach(sg=>{const b=$$("button",sg),i=b.findIndex(x=>x.getAttribute("aria-pressed")==="true");sg.style.setProperty("--n",b.length);sg.style.setProperty("--i",Math.max(0,i))})}
-function renderTop(){const l=L();$("#bn").textContent=$("#ab").textContent=S.lang==="ru"?"Фаза":"Fase";$("#demotag").textContent=l.demo;$("#city").textContent=l.city;$("#rClient").textContent=l.client;$("#rPro").textContent=l.pro;$("#hintbtn").textContent=l.hints;$("#gclose").textContent=XX().closeG;
+function renderTop(){const l=L();$("#bn").textContent=$("#ab").textContent=S.lang==="ru"?"Фаза":"Fase";$("#demotag").textContent=l.demo;$("#city").textContent=l.city;$("#rClient").textContent=l.client;$("#rPro").textContent=l.pro;$("#hintbtn .ht").textContent=l.hints;$("#hintbtn").setAttribute("aria-label",l.hints);$("#demotag2").textContent=l.demo;$("#gclose").textContent=XX().closeG;
  $$('[data-act="role"]').forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===S.role));$$('[data-act="lang"]').forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===S.lang));
  document.documentElement.lang=S.lang;$("#who").textContent=S.role==="client"?"АП":"АГ";syncSegs()}
 function renderGuide(){const l=L();$("#gt").textContent=l.guideT;$("#gp").textContent=l.guideP;$("#gf").textContent=l.gfoot;
